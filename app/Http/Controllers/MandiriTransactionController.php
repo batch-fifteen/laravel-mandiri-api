@@ -14,16 +14,16 @@ use DateTime;
 use DateTimeZone;
 use Illuminate\Support\Facades\Date;
 
-$ClientSecret = "b319a510-c02a-49dc-817e-16c76c65eaac";
-$XPartnerId = "SANDBOX";
+$ClientSecret = "99075c0b-b893-43aa-9365-1f17c4b2ea10";
+$XPartnerId = "ADGN8151";
 
 class MandiriTransactionController extends Controller
 {
     
     public function getAuth(){
-        $url = "https://sandbox.bankmandiri.co.id/openapi/auth/v2.0/access-token/b2b";
+        $url = "https://api.bankmandiri.co.id/openapi/auth/v2.0/access-token/b2b";
         $grantType = "client_credentials";
-        $ClientId = "05b00320-012a-4434-be51-3135639e8e30";
+        $ClientId = "dde72790-6a6d-4e35-b586-ffac8e1030fb";
 
         list($x_timestamp, $x_signature) = getAuthSignature();
         
@@ -34,11 +34,12 @@ class MandiriTransactionController extends Controller
         ['grantType' => $grantType]);
         
         $responseJson = $response->json();
+        echo json_encode($responseJson);
         return $responseJson;
     }
 
     public function getTransactionsHistory($accountNumber, $fromDateTime, $toDateTime, $pageNumber){
-        $url = 'https://sandbox.bankmandiri.co.id/openapi/transactions/v2.1/bank-statement';
+        $url = 'https://api.bankmandiri.co.id/openapi/transactions/v2.1/bank-statement';
 
         
         $response = $this->getAuth();
@@ -77,9 +78,9 @@ class MandiriTransactionController extends Controller
         $end_point_url = '/openapi/transactions/v2.1/bank-statement';
     
         //Example Client Secret. must be adjusted based on partner client secret
-        $client_secret = 'b319a510-c02a-49dc-817e-16c76c65eaac';
+        $client_secret = '99075c0b-b893-43aa-9365-1f17c4b2ea10';
     
-        $x_external_id = '20000113';
+        $x_external_id = date('YmdHis') . mt_rand(10000, 99999);
         $channel_id = 62456;
     
         //Example SHA512 Process
@@ -88,10 +89,10 @@ class MandiriTransactionController extends Controller
         $base64 = base64_encode($bin_sha512);
     
         //X-SIGNATURE RESULT
-        // echo  'jsonmini: '.$data_json_minify."\n";
-        // echo 'full data: '.$full_data."\n";
-        // echo 'x-signature: '.$base64."\n";
-        // echo 'x-external-id: '.$x_external_id."\n";
+        echo  'jsonmini: '.$data_json_minify."\n";
+        echo 'full data: '.$full_data."\n";
+        echo 'x-signature: '.$base64."\n";
+        echo 'x-external-id: '.$x_external_id."\n";
         // return [$x_timestamp, $base64, $x_external_id, $channel_id];
         //============================================================================
         
@@ -100,7 +101,7 @@ class MandiriTransactionController extends Controller
             'Authorization'=>'Bearer '.$accessToken,
             'X-TIMESTAMP'=>$x_timestamp,
             'X-SIGNATURE'=>$base64,
-            'X-PARTNER-ID'=>'SANDBOX',
+            'X-PARTNER-ID'=>'ADGN8151',
             'X-EXTERNAL-ID'=>$x_external_id,
             'CHANNEL-ID'=>$channel_id
         ])->post($url,[
